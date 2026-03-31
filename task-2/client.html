@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+        #chat {
+            width: 60%;
+            margin: auto;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            padding: 10px;
+            background: #1e293b;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            padding: 10px;
+            background: #38bdf8;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Real-Time Chat</h2>
+
+<input id="username" placeholder="Enter username" />
+<button onclick="join()">Join</button>
+
+<div id="chat"></div>
+
+<input id="msg" placeholder="Type message..." oninput="typing()" />
+<button onclick="send()">Send</button>
+
+<p id="users"></p>
+<p id="typing"></p>
+
+<script>
+let ws;
+
+function join() {
+    const user = document.getElementById("username").value;
+    ws = new WebSocket("ws://localhost:8765");
+
+    ws.onopen = () => {
+        ws.send(JSON.stringify({
+            type: "join",
+            username: user
+        }));
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "message") {
+            addMessage(`${data.user}: ${data.message}`);
+        }
+
+        if (data.type === "users") {
+            document.getElementById("users").innerText =
+                "Online: " + data.users.join(", ");
+        }
+
+        if (data.type === "typing") {
+            document.getElementById("typing").innerText =
+                data.user + " is typing...";
+            setTimeout(() => {
+                document.getElementById("typing").innerText = "";
+            }, 1000);
+        }
+    };
+}
+
+function send() {
+    const msg = document.getElementById("msg").value;
+
+    ws.send(JSON.stringify({
+        type: "message",
+        message: msg
+    }));
+
+    document.getElementById("msg").value = "";
+}
+
+function typing() {
+    ws.send(JSON.stringify({
+        type: "typing"
+    }));
+}
+
+function addMessage(msg) {
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `<p>${msg}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
