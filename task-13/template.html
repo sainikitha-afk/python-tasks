@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1>Monthly Sales Report — January 2026</h1>
+
+<p>Total Revenue: {{ total_revenue }}</p>
+<p>Units Sold: {{ units }}</p>
+<p>Avg Order Value: {{ avg_order }}</p>
+
+<h2>Revenue by Region</h2>
+<img src="reports/bar.png" width="400"/>
+
+<h2>Daily Trend</h2>
+<img src="reports/line.png" width="400"/>
+
+{% if warning %}
+<h3 style="color:red;">⚠ West region declined</h3>
+{% endif %}
+
+</body>
+</html>
