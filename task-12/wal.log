@@ -1,0 +1,5 @@
+{"action": "create_node", "label": "Person", "props": {"name": "Alice", "age": 30}}
+{"action": "create_node", "label": "Person", "props": {"name": "Bob", "age": 28}}
+{"action": "create_node", "label": "Company", "props": {"name": "Acme Corp"}}
+{"action": "create_edge", "src": "alice", "dst": "bob", "label": "FRIENDS_WITH"}
+{"action": "create_edge", "src": "bob", "dst": "acme", "label": "WORKS_AT"}
